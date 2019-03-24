@@ -1,0 +1,35 @@
+---
+- hosts: all
+  become: true
+  connection: ssh 
+
+  tasks:
+  - name: Install ntp [Debian/Ubuntu]
+    apt: 
+      name: "ntp"
+      state: latest
+    with_items:
+     - ntp
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+  - name: Install ntp [Redhat/CentOS]
+    yum: 
+      name: "ntp"
+      state: latest
+    with_items:
+     - ntp
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+  - name: restart ntp
+    service: 
+      name: ntp.service
+      state: started 
+      enabled: yes
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+  - name: restart ntp
+    service: 
+      name: ntpd.service
+      state: started 
+      enabled: yes
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
