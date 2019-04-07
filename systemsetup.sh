@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This script was created to automate the creation of a Kubernetes node on a Rackspace cloud server
+# It *should* be able to work for Centos 7 or Ubuntu 18.04+
+# Ensure you create a cloud server with more then a single CPU or it will not work
+
 # function for adding a user
 kubeadduser () {
     if [ $(id -u) -eq 0 ]; then
