@@ -53,6 +53,10 @@ if [[ $OS == 'Ubuntu' ]]; then
     
     # add non-root user
     kubeadduser 
+    
+    # add kubernetes repository key and repository
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+    add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 
     # install docker
     apt install docker.io -y
@@ -63,9 +67,6 @@ if [[ $OS == 'Ubuntu' ]]; then
   
     # install dependencies
     apt install apt-transport-https curl -y
-
-    # add kubernetes repository key
-    curl -s https://packages.cloud.google.com/apt/dock/apt-key.gpg | sudo apt-key add
 
     # disable swap
     swapoff -a
