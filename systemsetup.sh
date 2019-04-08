@@ -1,5 +1,5 @@
 #!/bin/bash
-
+{
 # This script was created to automate the creation of a Kubernetes node on a Rackspace cloud server
 # It *should* be able to work for Centos 7 or Ubuntu 18.04+
 # Ensure you create a cloud server with more then a single CPU or it will not work
@@ -134,3 +134,4 @@ EOF
     sudo kubeadm init --pod-network-cidr=172.168.10.0/24
 
 fi
+} &> k8slabsetup.log
