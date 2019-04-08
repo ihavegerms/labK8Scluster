@@ -80,6 +80,8 @@ if [[ $OS == 'Ubuntu' ]]; then
 elif [[ $OS == 'CentOS Linux' ]]; then
     hostnamectl set-hostname "k8slab-node-$OS-$(date +'%Y%m%d')-$uuid"
     mv /etc/hosts /etc/hosts.orig
+    # set bridge-nf-call-iptables to 1
+    echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
     (echo -n "127.0.0.1 "; echo "localhost") > /etc/hosts && chmod 644 /etc/hosts
     IP=$(ifconfig eth0 | grep inet | head -n1 | awk '{print $2}')
     export HOSTNAME=$(hostname)
@@ -101,9 +103,6 @@ elif [[ $OS == 'CentOS Linux' ]]; then
     # ensure netilter module is loaded
     modprobe br_netfilter
   
-    # set bridge-nf-call-iptables to 1
-    echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
-
     # add non-root user
     kubeadduser 
 
