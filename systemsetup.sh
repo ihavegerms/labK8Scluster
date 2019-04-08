@@ -80,7 +80,9 @@ if [[ $OS == 'Ubuntu' ]]; then
 elif [[ $OS == 'CentOS Linux' ]]; then
     hostnamectl set-hostname "k8slab-node-$OS-$(date +'%Y%m%d')-$uuid"
     mv /etc/hosts /etc/hosts.orig
-    # set bridge-nf-call-iptables to 1
+    # ensure netilter module is loaded
+    # set bridge-nf-call-iptables to 1    
+    modprobe br_netfilter
     echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
     (echo -n "127.0.0.1 "; echo "localhost") > /etc/hosts && chmod 644 /etc/hosts
     IP=$(ifconfig eth0 | grep inet | head -n1 | awk '{print $2}')
@@ -100,8 +102,7 @@ elif [[ $OS == 'CentOS Linux' ]]; then
     firewall-cmd --permanent --add-port=10255/tcp
     firewall-cmd --reload
    
-    # ensure netilter module is loaded
-    modprobe br_netfilter
+
   
     # add non-root user
     kubeadduser 
