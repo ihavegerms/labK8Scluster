@@ -158,7 +158,7 @@ EOF
     echo "Kubernetes lab node setup complete!" > /dev/tty
 
 elif [[ $OS == 'uname -s' ]]; then
-    echo "Sorry, this script does not support your OS at this time."
+    echo "Sorry, this script does not support your OS at this time." > /dev/tty
     exit 1
     
 fi
