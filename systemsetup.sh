@@ -50,8 +50,8 @@ fi
 
 # set hostname, backup /etc/hosts, re-create /etc/hosts,
 if [[ $OS == 'Ubuntu' ]]; then
-    echo "OS [ Ubuntu ]" > /dev/tty
-    echo "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
+    echo -n "OS [ Ubuntu ]" > /dev/tty
+    echo -n "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
     hostnamectl set-hostname "k8slab-node-$OS-$(date +'%Y%m%d')-$uuid"
     mv /etc/hosts /etc/hosts.orig
     (echo -n "127.0.0.1 "; echo "localhost") > /etc/hosts && chmod 644 /etc/hosts
@@ -59,11 +59,11 @@ if [[ $OS == 'Ubuntu' ]]; then
     (echo -n "$IP "; echo $HOSTNAME) >> /etc/hosts
     
     # add non-root user
-    echo "Add a user" > /dev/tty
+    echo -n "Add a user" > /dev/tty
     kubeadduser 
     
     # add kubernetes repository key and repository
-    echo "Add Kubernetes key/repository, install/start-enable Docker, install dependencies" > /dev/tty
+    echo -n "Add Kubernetes key/repository, install/start-enable Docker, install dependencies" > /dev/tty
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
     add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 
@@ -85,10 +85,10 @@ if [[ $OS == 'Ubuntu' ]]; then
     apt install kubeadm -y
 
     # initialize and start Kubernetes cluster
-    echo "This part may take a while... [initializing Kubernetes node]" > /dev/tty
+    echo -n "This part may take a while... [initializing Kubernetes node]" > /dev/tty
     sudo kubeadm init --pod-network-cidr=172.168.10.0/24
     clear
-    echo "Kubernetes lab node setup complete!" > /dev/tty
+    echo -n "Kubernetes lab node setup complete!" > /dev/tty
 
 elif [[ $OS == 'CentOS Linux' ]]; then
     echo "OS [ CentOS ]" > /dev/tty
@@ -99,7 +99,7 @@ elif [[ $OS == 'CentOS Linux' ]]; then
     # ensure netilter module is loaded
     # set bridge-nf-call-iptables to 1    
     modprobe br_netfilter
-    echo "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
+    echo -n "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
     echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables`
     # re-populate /etc/hosts
     (echo -n "127.0.0.1 "; echo "localhost") > /etc/hosts && chmod 644 /etc/hosts
@@ -107,12 +107,12 @@ elif [[ $OS == 'CentOS Linux' ]]; then
     export HOSTNAME=$(hostname)
     (echo -n "$IP "; echo $HOSTNAME) >> /etc/hosts
  
-    echo "Disable SELinux" > /dev/tty
+    echo -n "Disable SELinux" > /dev/tty
     # disable SELinux
     setenforce 0
     sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 
-    echo "Set firewall rules. [--add-port, 6443,2379-2380,10250,10251,10252,10255]" > /dev/tty
+    echo -n "Set firewall rules. [--add-port, 6443,2379-2380,10250,10251,10252,10255]" > /dev/tty
     # set firewall rules
     firewall-cmd --permanent --add-port=6443/tcp
     firewall-cmd --permanent --add-port=2379-2380/tcp
@@ -122,11 +122,11 @@ elif [[ $OS == 'CentOS Linux' ]]; then
     firewall-cmd --permanent --add-port=10255/tcp
     firewall-cmd --reload
    
-    echo "Add a user" > /dev/tty
+    echo -n "Add a user" > /dev/tty
     # add non-root user
     kubeadduser 
 
-    echo "Add Kubernetes repository" > /dev/tty
+    echo -n "Add Kubernetes repository" > /dev/tty
     # add kubernetes repository
     cat << EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -139,7 +139,7 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
        https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 
-    echo "Disable Swap, install kubeadm and Docker" > /dev/tty
+    echo -n "Disable Swap, install kubeadm and Docker" > /dev/tty
     # disable swap
     swapoff -a
 
@@ -151,11 +151,11 @@ EOF
     systemctl enable docker && systemctl restart docker
     systemctl enable kubelet && systemctl restart kubelet
 
-    echo "Start and enable kubeadm/Docker. Initialize Kubernetes cluster... (This part may take a while...)" > /dev/tty
+    echo -n "Start and enable kubeadm/Docker. Initialize Kubernetes cluster... (This part may take a while...)" > /dev/tty
     # initialize and start Kubernetes cluster
     sudo kubeadm init --pod-network-cidr=172.168.10.0/24
     clear
-    echo "Kubernetes lab node setup complete!" > /dev/tty
+    echo -n "Kubernetes lab node setup complete!" > /dev/tty
 
 elif [[ $OS == 'uname -s' ]]; then
     echo "Sorry, this script does not support your OS at this time." > /dev/tty
