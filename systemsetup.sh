@@ -96,7 +96,7 @@ elif [[ $OS == 'CentOS Linux' ]]; then
     # set bridge-nf-call-iptables to 1    
     modprobe br_netfilter
     echo "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
-    echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables`
+    echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
     # re-populate /etc/hosts
     (echo -n "127.0.0.1 "; echo "localhost") > /etc/hosts && chmod 644 /etc/hosts
     IP=$(ifconfig eth0 | grep inet | head -n1 | awk '{print $2}')
