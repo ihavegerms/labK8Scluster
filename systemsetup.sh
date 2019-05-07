@@ -149,7 +149,7 @@ EOF
 
     echo "Start and enable kubeadm/Docker. Initialize Kubernetes cluster... (This part may take a while...)" > /dev/tty
     # initialize and start Kubernetes cluster
-    sudo kubeadm init --pod-network-cidr=172.168.10.0/24
+    sudo kubeadm init --pod-network-cidr=10.17.0.0/16 --service-cidr=10.18.0.0/24
     clear
     echo "Kubernetes lab node setup complete!" > /dev/tty
 
