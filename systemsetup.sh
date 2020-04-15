@@ -47,6 +47,8 @@ fi
 # set hostname, backup /etc/hosts, re-create /etc/hosts,
 if [[ $OS == 'Ubuntu' ]]; then
     echo "OS [ Ubuntu ]" > /dev/tty
+    echo "Update/Upgrade default packages" > /dev/tty
+    sudo apt-get update -y && sudo apt-get upgrade -y
     echo "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
     hostnamectl set-hostname "k8slab-node-$OS-$(date +'%Y%m%d')-$uuid"
     mv /etc/hosts /etc/hosts.orig
@@ -70,19 +72,19 @@ if [[ $OS == 'Ubuntu' ]]; then
     systemctl start docker
     systemctl enable docker
   
-    # install dependencies
-    apt install apt-transport-https curl -y
+    # install dependencies and additional useful things
+    apt install apt-transport-https curl git vim -y
 
     # disable swap
-    echo "Disable swap, install kubeadm, initialize Kubernetes cluster" > /dev/tty
+    echo "Disable swap, install kubeadm" > /dev/tty
     swapoff -a
 
     # install kubeadm
     apt install kubeadm -y
 
     # initialize and start Kubernetes cluster
-    echo "This part may take a while... [initializing Kubernetes node]" > /dev/tty
-    sudo kubeadm init --pod-network-cidr=172.168.10.0/24
+    # echo "This part may take a while... [initializing Kubernetes node]" > /dev/tty
+    # sudo kubeadm init --pod-network-cidr=172.168.10.0/24
     clear
     echo "Kubernetes lab node setup complete!" > /dev/tty
 
@@ -147,9 +149,9 @@ EOF
     systemctl enable docker && systemctl restart docker
     systemctl enable kubelet && systemctl restart kubelet
 
-    echo "Start and enable kubeadm/Docker. Initialize Kubernetes cluster... (This part may take a while...)" > /dev/tty
+    #echo "Start and enable kubeadm/Docker. Initialize Kubernetes cluster... (This part may take a while...)" > /dev/tty
     # initialize and start Kubernetes cluster
-    sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.245.0.0/24 --apiserver-advertise-address=$SERVICE_NETIP
+    #sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.245.0.0/24 --apiserver-advertise-address=$SERVICE_NETIP
     clear
     echo "Kubernetes lab node setup complete!" > /dev/tty
 
