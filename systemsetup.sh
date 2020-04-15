@@ -47,8 +47,8 @@ fi
 # set hostname, backup /etc/hosts, re-create /etc/hosts,
 if [[ $OS == 'Ubuntu' ]]; then
     echo "OS [ Ubuntu ]" > /dev/tty
-    echo "Update/Upgrade default packages" > /dev/tty
-    sudo apt-get update -y && sudo apt-get upgrade -y
+    echo "Update/Upgrade default packages - and install ifconfig (net-tools)" > /dev/tty
+    sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get install net-tools
     echo "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
     echo "Please enter a hostname [example: node[0-9].kube.local]: "
     read host_name
