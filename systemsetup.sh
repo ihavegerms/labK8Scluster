@@ -87,9 +87,18 @@ if [[ $OS == 'Ubuntu' ]]; then
     apt install kubeadm -y
     
     # Modify boot parameters
+    echo "Modify boot parameters" > /dev/tty
     cat << EOF > /boot/firmware/nobtcmd.txt
 net.ifnames=0 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=LABEL=writable rootfstype=ext4 elevator=deadline rootwait fixrtc cgroup_enable=cpu cgroup_enable=memory
 EOF
+   
+    # Add k8s.conf to /etc/sysctl.d/
+    echo "Set nf-call-ip6tables and iptables to 1"
+    cat << EOF > /boot/firmware/nobtcmd.txt
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+    sysctl -p
 
     # initialize and start Kubernetes cluster
     # echo "This part may take a while... [initializing Kubernetes node]" > /dev/tty
