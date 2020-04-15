@@ -50,7 +50,9 @@ if [[ $OS == 'Ubuntu' ]]; then
     echo "Update/Upgrade default packages" > /dev/tty
     sudo apt-get update -y && sudo apt-get upgrade -y
     echo "Set Hostname, backup/re-create /etc/hosts" > /dev/tty
-    hostnamectl set-hostname "k8slab-node-$OS-$(date +'%Y%m%d')-$uuid"
+    echo "Please enter a hostname [example: node[0-9].kube.local]: "
+    read host_name
+    hostnamectl set-hostname $host_name
     mv /etc/hosts /etc/hosts.orig
     (echo -n "127.0.0.1 "; echo "localhost") > /etc/hosts && chmod 644 /etc/hosts
     IP=$(ifconfig eth0 | grep inet | head -n1 | awk '{print $2}')
@@ -75,17 +77,26 @@ if [[ $OS == 'Ubuntu' ]]; then
     # install dependencies and additional useful things
     apt install apt-transport-https curl git vim -y
 
-    # disable swap
-    echo "Disable swap, install kubeadm" > /dev/tty
+    # disable swap and network manager
+    echo "Disable swap and network manager, install kubeadm" > /dev/tty
+    systemctl disable network-manager
+    systemctl stop network-managersudo
     swapoff -a
 
     # install kubeadm
     apt install kubeadm -y
+    
+    # Modify boot parameters
+    cat << EOF > /boot/firmware/nobtcmd.txt
+net.ifnames=0 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=LABEL=writable rootfstype=ext4 elevator=deadline rootwait fixrtc cgroup_enable=cpu cgroup_enable=memory
+EOF
 
     # initialize and start Kubernetes cluster
     # echo "This part may take a while... [initializing Kubernetes node]" > /dev/tty
     # sudo kubeadm init --pod-network-cidr=172.168.10.0/24
     clear
+    echo "You still need to configure /etc/network/interfaces and /etc/hosts to match the other nodes"
+    echo "-----"
     echo "Kubernetes lab node setup complete!" > /dev/tty
 
 elif [[ $OS == 'CentOS Linux' ]]; then
