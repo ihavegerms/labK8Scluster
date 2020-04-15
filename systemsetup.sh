@@ -105,6 +105,7 @@ EOF
     # sudo kubeadm init --pod-network-cidr=172.168.10.0/24
     clear
     echo "You still need to configure /etc/network/interfaces and /etc/hosts to match the other nodes"
+    echo "Write something to handle loading an ssh key as well.."
     echo "-----"
     echo "Kubernetes lab node setup complete!" > /dev/tty
 
