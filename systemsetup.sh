@@ -94,7 +94,7 @@ EOF
    
     # Add k8s.conf to /etc/sysctl.d/
     echo "Set nf-call-ip6tables and iptables to 1"
-    cat << EOF > /boot/firmware/nobtcmd.txt
+    cat << EOF > /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
